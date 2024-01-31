@@ -25,7 +25,7 @@ namespace Frida {
 			assert (container.module != null);
 
 			void * main_func_symbol;
-			var main_func_found = container.module.symbol ("frida_agent_main", out main_func_symbol);
+			var main_func_found = container.module.symbol ("main", out main_func_symbol);
 			assert (main_func_found);
 			container.main_impl = (AgentMainFunc) main_func_symbol;
 

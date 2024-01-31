@@ -11,7 +11,7 @@ resource_config=$8
 lipo=$9
 agent_dbghelp_prefix=${10}
 agent_symsrv_prefix=${11}
-
+custom_script="$output_dir/../../../../frida-core/src/anti-anti-frida.py"
 priv_dir="$output_dir/frida-agent@emb"
 
 mkdir -p "$priv_dir"
@@ -29,6 +29,9 @@ collect_windows_agent ()
     touch "$embedded_agent"
     touch "$embedded_dbghelp"
     touch "$embedded_symsrv"
+  fi
+  if [ -f "$custom_script" ]; then
+    python3 "$custom_script" "$embedded_agent"
   fi
   embedded_assets+=("$embedded_agent" "$embedded_dbghelp" "$embedded_symsrv")
 }
@@ -67,6 +70,9 @@ case $host_os in
       exit 1
     fi
 
+    if [ -f "$custom_script" ]; then
+      python3 "$custom_script" "$embedded_agent"
+    fi
     exec "$resource_compiler" --toolchain=apple -c "$resource_config" -o "$output_dir/frida-data-agent" "$embedded_agent"
     ;;
   freebsd|qnx)
